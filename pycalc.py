@@ -10,10 +10,12 @@ from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QVBoxLayout
 
+from functools import partial
+
 __version__ = '0.1'
 __author__ = 'Joe'
 
-# Create a subclass of QMainWindow to setup the calculator's GUI
+# Subclass of QMainWindow to setup the calculator's GUI
 class PyCalcUi(QMainWindow):
     """PyCalc's View (GUI)."""
     def __init__(self):
@@ -97,16 +99,44 @@ class PyCalcUi(QMainWindow):
     def clearDisplay(self):
         """Clear the display"""
         self.setDisplayText("")
-        
+
+
+# Controller class to connect the GUI and the model
+class PyCalcCtrl:
+    """PyCalc controller class"""
+    def __init__(self, view):
+        """Controller initializer"""
+        self._view = view
+        # connect signals and slots
+        self._connectSignals()
+
+    def _buildExpression(self, sub_exp):
+        """Build expression"""
+        expression = self._view.displayText() + sub_exp
+        self._view.setDisplayText(expression)
+
+    def _connectSignals(self):
+        """Connect signals and slots"""
+        for btnText, btn in self._view.buttons.items():
+            if btnText not in {'=', 'C'}:
+                btn.clicked.connect(partial(self._buildExpression, btnText))
+
+        self._view.buttons['C'].clicked.connect(self._view.clearDisplay)
+
 
 # Client code
 def main():
     """Main function"""
     # Create an instance of QApplication
     pycalc = QApplication(sys.argv)
+
     # Show the calculators GUI
     view = PyCalcUi()
     view.show()
+
+    # Create instances of the model and the controller
+    PyCalcCtrl(view=view)
+    
     # Execute calculator's main loop
     sys.exit(pycalc.exec_())
 
