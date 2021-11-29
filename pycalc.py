@@ -34,7 +34,7 @@ class PyCalcUi(QMainWindow):
 
         # Create the display and buttons
         self._createDisplay()
-        self.createButtons()
+        self._createButtons()
     
     def _createDisplay(self):
         """Create the display"""
@@ -81,15 +81,15 @@ class PyCalcUi(QMainWindow):
         # Create the buttons and add them to the grid layout
         for btnText, pos in buttons.items():
             self.buttons[btnText] = QPushButton(btnText)
-            self.buttons[btnText].setFizedSize(40, 40)
+            self.buttons[btnText].setFixedSize(40, 40)
             buttonsLayout.addWidget(self.buttons[btnText], pos[0], pos[1])
 
         # add buttonsLayout to the general layout
-        self.generalLayout.addLayer(buttonsLayout)
+        self.generalLayout.addLayout(buttonsLayout)
 
     def setDisplayText(self, text):
         """Set display's text"""
-        self.disply.setText(text)
+        self.display.setText(text)
         self.display.setFocus()
     
     def displayText(self):
@@ -136,7 +136,7 @@ def main():
 
     # Create instances of the model and the controller
     PyCalcCtrl(view=view)
-    
+
     # Execute calculator's main loop
     sys.exit(pycalc.exec_())
 
